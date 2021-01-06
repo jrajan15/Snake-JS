@@ -1,0 +1,83 @@
+﻿<canvas id="game" width="400" height ="400"></canvas>
+<script>
+    window.onload = function() {
+        canvas = document.getElementById('game');
+        ctx = canvas.getContext('2d');
+        document.addEventListener("keydown", keypush)
+        setInterval(game_function, 1000/15)
+    }
+
+    x_pos = 10;
+    y_pos = 10;
+    x_vel = 10;
+    y_vel = 10;
+    grid_size = 20;
+    tile_count = 20;
+    apple_x = 15;
+    apple_y = 15;
+    trail = [];
+    tail_length = 5;
+
+    function game_function() {
+        x_pos += x_vel;
+        y_pos += y_vel;
+        if (x_pos < 0) {
+            x_pos = tile_count -1;
+        }
+        if (y_pos < 0) {
+            y_pos = tile_count -1;
+        }
+        if(x_pos > tile_count -1) {
+            x_pos = 0;
+        }
+        if(y_pos > tile_count -1) {
+            y_pos = 0;
+        }
+
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "lime";
+        for (var i = 0; i < trail.length; i++) {
+            ctx.fillRect(trail[i].x * grid_size, trail[i].y * grid_size, grid_size -2, grid_size -2);
+                if (trail[i].x == x_pos && trail[i].y == y_pos) {
+                    tail_length = 5;
+                }
+        }
+        trail.push({x:x_pos, y:y_pos});
+        
+        while (trail.length > tail_length) {
+            trail.shift();
+        }
+        if(apple_x ==x_pos && apple_y == y_pos) {
+            tail_length++;
+            apple_x = Math.floor(Math.random() * tile_count);
+            apple_y = Math.floor(Math.random() * tile_count);
+        }
+
+        ctx.fillStyle = 'red';
+        ctx.fillRect(apple_x * grid_size, apple_y * grid_size, grid_size -2, grid_size -2);
+
+        function keypush() {
+                switch(event.keyCode) {
+                    case 37: 
+                        x_vel = -1;
+                        y_vel = 0;
+                        break;
+                    case 38:
+                        x_vel = 0;
+                        y_vel = -1;
+                        break;
+                    case 39:
+                        x_vel = 0;
+                        y_vel = -1;
+                        break;
+                    case 40:
+                        x_vel = 0;
+                        y_vel = 1;
+                        break;                    
+
+                }
+        }
+    }
+</script>
